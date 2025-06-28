@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Armor Database</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #f1f1f1;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #2b2b2b;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #333;
+        }
+        img {
+            max-height: 40px;
+        }
+        tr:nth-child(even) {
+            background-color: #242424;
+        }
+    </style>
+</head>
+<body>
+    <h1>Armor Database</h1>
+    <table id="armor-table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Armor</th>
+                <th>Stats</th>
+                <th>Dropped By / Sold By</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPeOHz_lYh0s1_ZoiQ5ruNz2wYBPFqDiCXbxzUqgDb5qsd6ZSBws4_xqCKfbhkxTEujqOy1vKrgGHE/pub?gid=992204953&single=true&output=csv";
+
+        fetch(sheetUrl)
+            .then(response => response.text())
+            .then(csv => {
+                const rows = csv.trim().split("\n").map(row => row.split(","));
+                const tbody = document.querySelector("#armor-table tbody");
+
+                for (let i = 1; i < rows.length; i++) {
+                    const [imageUrl, name, armor, stats, droppedBy] = rows[i];
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td><img src="${imageUrl}" alt="armor"></td>
+                        <td>${name}</td>
+                        <td>${armor}</td>
+                        <td>${stats}</td>
+                        <td>${droppedBy}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching CSV:", error);
+            });
+    </script>
+</body>
+</html>
