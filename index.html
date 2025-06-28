@@ -59,11 +59,11 @@
         fetch(sheetUrl)
             .then(response => response.text())
             .then(csv => {
-                const rows = csv.trim().split("\n").map(row => row.split(","));
+                const rows = csv.trim().split(/\r?\n/).map(row => row.match(/(".*?"|[^",]+)(?=,|$)/g));
                 const tbody = document.querySelector("#armor-table tbody");
 
                 for (let i = 1; i < rows.length; i++) {
-                    const [imageUrl, name, armor, stats, droppedBy] = rows[i];
+                    const [imageUrl, name, armor, stats, droppedBy] = rows[i].map(cell => cell.replace(/^"|"$/g, ""));
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
                         <td><img src="${imageUrl}" alt="armor"></td>
